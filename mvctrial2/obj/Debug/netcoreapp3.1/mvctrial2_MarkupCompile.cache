@@ -1,20 +1,20 @@
 ﻿mvctrial2
-
+1.0.0.0
 
 winexe
 C#
 .cs
-C:\Users\okeef\Documents\03Personal\projects\csharpmvc\mvctrial2\mvctrial2\mvctrial2\obj\Debug\netcoreapp3.1\
+c:\Users\okeef\Documents\03Personal\projects\csharpmvc\mvctrial2\mvctrial2\mvctrial2\obj\Debug\netcoreapp3.1\
 mvctrial2
 none
 false
 TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1;
-C:\Users\okeef\Documents\03Personal\projects\csharpmvc\mvctrial2\mvctrial2\mvctrial2\App.xaml
+c:\Users\okeef\Documents\03Personal\projects\csharpmvc\mvctrial2\mvctrial2\mvctrial2\App.xaml
 11407045341
 
-102093230
+12-64021753
 192-1533232326
 MainWindow.xaml;
 
-False
+True
 
