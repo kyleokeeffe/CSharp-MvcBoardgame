@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data.SqlClient;
 
 namespace mvctrial2
 {
@@ -39,35 +40,114 @@ namespace mvctrial2
 
 
             //make following into method for AddTextToSquare / RemoveTextFromSquare
-            Rectangle selectedRect = GetSquareRect(5, 5);
+           /* Rectangle selectedRect = GetSquareRect(5, 5);
                 selectedRect.Fill = new SolidColorBrush(Colors.Red);
 
             int c = Grid.GetColumn(selectedRect);
             int r = Grid.GetRow(selectedRect);
+         
+            TextBlock text = new TextBlock();
+            text.Text = "X";
+            text.IsHitTestVisible = false;
+
+            boardGrid.Children.Add(text);
+       
+            Grid.SetColumn(text, c);
+            Grid.SetRow(text, r);*/
+
+
+        
+
+        }
+
+        public void DoThing()
+        {
+            var result = from element in boardGrid.Children.OfType<TextBlock>() where element != null select element;
+
+            string report = "";
+            foreach (var thing in result)
+            {
+                int c = Grid.GetColumn(thing);
+                int r = Grid.GetRow(thing);
+                report +=$"{c},{r}\n";
+            }
+            MessageBox.Show(report);
+        }
+        public void PrintLabelOnRect(Rectangle rect)
+        {
+            int c = Grid.GetColumn(rect);
+            int r = Grid.GetRow(rect);
+            //need to be abel to check in teh label is already there
+
+
+            //var result = from element in boardGrid.Children.OfType<TextBlock>() let textblock = element as TextBlock where textblock!= null select textblock;
+           
 
             TextBlock text = new TextBlock();
             text.Text = "X";
+            text.IsHitTestVisible = false;
 
             boardGrid.Children.Add(text);
+
             Grid.SetColumn(text, c);
             Grid.SetRow(text, r);
-
-        
-
         }
-
        protected void OnClicked(object sender, MouseButtonEventArgs e)
         {
-         
-            Rectangle senderCasted = (Rectangle)sender;
-            senderCasted.Fill =new SolidColorBrush(Colors.Pink);
-            MessageBox.Show($" {sender.ToString()} {e.GetPosition(boardGrid).X.ToString()},{e.GetPosition(boardGrid).Y.ToString()}");
+
+          
+              
+            Rectangle senderAsRect = (Rectangle)sender;
+            //senderAsRect.Fill = new SolidColorBrush(Colors.Pink);
+            PrintLabelOnRect(senderAsRect);
+            DoThing();
+            
+          
+               
+            //MessageBox.Show($" {sender.ToString()} {e.GetPosition(boardGrid).X.ToString()},{e.GetPosition(boardGrid).Y.ToString()} {sender.GetType().ToString()}");
+
+
 
             //switch statement for attribute of sender = does it have a piuece on the associated square 
-            //or, since addign a label to the grid cell places the lavbel above the retangle, could have, if sender is text type 
+            //have rect, query viewmap dictionry for key 
+
+            //turn this into a method: for returnign associated key, and for checking if piece is on rect 
+            //Square associatedSquare= gameCon.ViewMap.FirstOrDefault(thing => thing.Value == senderAsRect).Key;
+            Square associatedSquare = GetRectSquare(senderAsRect);
+            Piece occupyingPiece;
+
+            if (CheckSquareForPiece(associatedSquare) != null)
+                occupyingPiece = CheckSquareForPiece(associatedSquare);
+            else
+                occupyingPiece = null;
+
+            if (occupyingPiece != null) { 
+            
+                //then piece was clicked - do piece pattern 
+            }
+         
+                //then square clicked 
+
         }
         
 
+        public Piece CheckSquareForPiece(Square square)
+        {
+            Piece piece;
+
+
+
+            if (square.Piece != null)
+                piece = square.Piece;
+            else
+                piece = null;
+            return piece;
+        }
+        public Square GetRectSquare(Rectangle rect)
+        {
+            Square associatedSquare = gameCon.ViewMap.FirstOrDefault(thing => thing.Value == rect).Key;
+            return associatedSquare;
+        }
         public Rectangle GetSquareRect(int x, int y)
         {
             var query = gameCon.ViewMap.Keys.AsQueryable<Square>().Where<Square>(thing => thing.X == x && thing.Y == y);

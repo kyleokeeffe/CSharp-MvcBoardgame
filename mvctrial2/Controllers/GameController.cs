@@ -50,6 +50,7 @@ namespace mvctrial2.Controllers
         {
             //using map and
             //add node to grid
+
         }
         public Square GetSquare(int x, int y)
         {
