@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data.SqlClient;
-using static mvctrial2.Services.ControllerService;
+using ContServ= mvctrial2.Services.ControllerService;
 
 namespace mvctrial2
 {
@@ -31,12 +31,13 @@ namespace mvctrial2
        // private BoardController BoardCon;
        // private PieceController PieceCon;
         //private Grid grid;
-        
+        //private ControllerService ContServ;
         //public GameController GameCon { get { return this._GameCon; } set { this._GameCon = value; } }
        // public BoardController BoardCon { get { return this._BoardCon; } set { this._BoardCon = value; } }
 
         public MainWindow()
         {
+            //ContServ=new ControllerService();
             InitializeComponent();
 
             // grid = boardGrid;
