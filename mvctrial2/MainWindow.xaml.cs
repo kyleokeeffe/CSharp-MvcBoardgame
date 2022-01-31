@@ -59,8 +59,27 @@ namespace mvctrial2
         
 
         }
+        public bool CheckForLabel(Rectangle rect)
+        {
+            bool labelPresent = false;
+            var result = 
+                from element 
+                in boardGrid.Children.OfType<TextBlock>() 
+                where 
+                    (element != null) && 
+                    (Grid.GetColumn(element) == Grid.GetColumn(rect)) && 
+                    (Grid.GetRow(element) == Grid.GetRow(rect)) 
+                select element;
 
-        public void DoThing()
+            if (result.Count() == 0)
+                labelPresent = false;
+            else
+                labelPresent = true;
+
+            return labelPresent;
+        }
+
+        public void AlertRectInfo()
         {
             var result = from element in boardGrid.Children.OfType<TextBlock>() where element != null select element;
 
@@ -73,11 +92,15 @@ namespace mvctrial2
             }
             MessageBox.Show(report);
         }
+
         public void PrintLabelOnRect(Rectangle rect)
         {
             int c = Grid.GetColumn(rect);
             int r = Grid.GetRow(rect);
             //need to be abel to check in teh label is already there
+            //get teh square for this rect 
+
+            
 
 
             //var result = from element in boardGrid.Children.OfType<TextBlock>() let textblock = element as TextBlock where textblock!= null select textblock;
@@ -99,8 +122,11 @@ namespace mvctrial2
               
             Rectangle senderAsRect = (Rectangle)sender;
             //senderAsRect.Fill = new SolidColorBrush(Colors.Pink);
-            PrintLabelOnRect(senderAsRect);
-            DoThing();
+            bool labelPresent = CheckForLabel(senderAsRect);
+            if (labelPresent == false)
+                PrintLabelOnRect(senderAsRect);
+            
+            AlertRectInfo();
             
           
                
@@ -116,15 +142,17 @@ namespace mvctrial2
             Square associatedSquare = GetRectSquare(senderAsRect);
             Piece occupyingPiece;
 
-            if (CheckSquareForPiece(associatedSquare) != null)
+            /*if (CheckSquareForPiece(associatedSquare) != null)
                 occupyingPiece = CheckSquareForPiece(associatedSquare);
+
             else
                 occupyingPiece = null;
 
-            if (occupyingPiece != null) { 
-            
-                //then piece was clicked - do piece pattern 
-            }
+
+
+            if (occupyingPiece != null) {    
+                PrintLabelOnRect(senderAsRect);    //then piece was clicked - do piece pattern 
+            }*/
          
                 //then square clicked 
 
@@ -148,6 +176,8 @@ namespace mvctrial2
             Square associatedSquare = gameCon.ViewMap.FirstOrDefault(thing => thing.Value == rect).Key;
             return associatedSquare;
         }
+
+
         public Rectangle GetSquareRect(int x, int y)
         {
             var query = gameCon.ViewMap.Keys.AsQueryable<Square>().Where<Square>(thing => thing.X == x && thing.Y == y);
@@ -170,7 +200,7 @@ namespace mvctrial2
            
 
         }
-
+     
         public void BuildBoard()
         {
             for (int i = 0; i < 10; i++)
