@@ -31,7 +31,7 @@ namespace mvctrial2.Controllers
 
             CreatePieces();
         }
-        public static GameController GetInstance(){
+        public static override GameController GetInstance(){
             if (_Instance ==null){
                 _Instance = new GameController();
             }

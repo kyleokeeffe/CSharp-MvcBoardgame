@@ -25,7 +25,7 @@ namespace mvctrial2.Controllers
          //   this.BoardCon = this.ContServ.BoardCon;
         }
 
-        public static PieceController GetInstance()
+        public static override PieceController GetInstance()
         {
             if(_Instance == null)
             {

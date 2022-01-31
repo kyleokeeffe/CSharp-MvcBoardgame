@@ -46,7 +46,7 @@ namespace mvctrial2.Controllers
             this.BoardGrid = ((MainWindow)Application.Current.MainWindow).boardGrid;
         }
 
-        public static BoardController GetInstance()
+        public static override BoardController GetInstance()
         {
             if (_Instance == null)
             {

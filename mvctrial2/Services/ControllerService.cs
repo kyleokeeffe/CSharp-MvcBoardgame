@@ -27,7 +27,7 @@ namespace mvctrial2.Services
             PieceCon = PieceController.GetInstance();
 
         }
-        public static ControllerService GetInstance()
+        public static virtual ControllerService GetInstance()
         {
             if (_Instance == null)
             {
