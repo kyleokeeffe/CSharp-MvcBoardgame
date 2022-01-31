@@ -15,7 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data.SqlClient;
-using ContServ= mvctrial2.Services.ControllerService;
+using mvctrial2.Services;
+
 
 namespace mvctrial2
 {
@@ -26,27 +27,27 @@ namespace mvctrial2
     public delegate void ClickedEventHandler(Rectangle sender, MouseButtonEventArgs e);
     public partial class MainWindow : Window
     {
-        
+
         //private GameController GameCon;
-       // private BoardController BoardCon;
-       // private PieceController PieceCon;
+        // private BoardController BoardCon;
+        // private PieceController PieceCon;
         //private Grid grid;
         //private ControllerService ContServ;
         //public GameController GameCon { get { return this._GameCon; } set { this._GameCon = value; } }
-       // public BoardController BoardCon { get { return this._BoardCon; } set { this._BoardCon = value; } }
-
+        // public BoardController BoardCon { get { return this._BoardCon; } set { this._BoardCon = value; } }
+        private ControllerService cs;
         public MainWindow()
         {
             //ContServ=new ControllerService();
             InitializeComponent();
-
+            cs = new ControllerService();
             // grid = boardGrid;
             //  GameCon = GameController.GetInstance();
             // BoardCon = BoardController.GetInstance();
             //  PieceCon = PieceController.GetInstance();
 
-            GameCon.DoNothing();
-            BoardCon.BuildBoard();
+            cs.GameCon.DoNothing();
+            cs.BoardCon.BuildBoard();
 
 
             //make following into method for AddTextToSquare / RemoveTextFromSquare
@@ -133,24 +134,24 @@ namespace mvctrial2
             Rectangle senderAsRect = (Rectangle)sender;
             //senderAsRect.Fill = new SolidColorBrush(Colors.Pink);
 
-            Square senderAsSquare = BoardCon.GetSquare(senderAsRect);
+            Square senderAsSquare = cs.BoardCon.GetSquare(senderAsRect);
             if (senderAsSquare.Piece != null)
             {
-                List<Square> legalMoves = PieceCon.GetLegalMoves(senderAsSquare.Piece);
+                List<Square> legalMoves = cs.PieceCon.GetLegalMoves(senderAsSquare.Piece);
                 foreach (var thing in legalMoves)
                 {
-                    BoardCon.AddTextBlock(thing);
+                    cs.BoardCon.AddTextBlock(thing);
                 }
 
             }
             else
                 senderAsRect.Fill = new SolidColorBrush(Colors.Blue);
 
-            TextBlock textBlock = BoardCon.CheckForTextBlock(senderAsRect);
+            TextBlock textBlock = cs.BoardCon.CheckForTextBlock(senderAsRect);
             if (textBlock == null)
-                BoardCon.AddTextBlock(senderAsRect);
+                cs.BoardCon.AddTextBlock(senderAsRect);
             else
-                BoardCon.RemoveTextBlock(senderAsRect);
+                cs.BoardCon.RemoveTextBlock(senderAsRect);
 
             AlertRectInfo();
             
@@ -165,7 +166,7 @@ namespace mvctrial2
 
             //turn this into a method: for returnign associated key, and for checking if piece is on rect 
             //Square associatedSquare= gameCon.ViewMap.FirstOrDefault(thing => thing.Value == senderAsRect).Key;
-            Square associatedSquare = BoardCon.GetSquare(senderAsRect);
+            Square associatedSquare = cs.BoardCon.GetSquare(senderAsRect);
             Piece occupyingPiece;
 
             /*if (CheckSquareForPiece(associatedSquare) != null)

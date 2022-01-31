@@ -9,10 +9,10 @@ using static mvctrial2.Services.ControllerService;
 
 namespace mvctrial2.Controllers
 {
-    public sealed class GameController
+    public sealed class GameController:ControllerService
     {
         private static GameController _Instance;
-        private BoardController _BoardCon;
+       //private BoardController _BoardCon;
         
         private Game _Game;
         private Dictionary<Square, Rectangle>_ViewMap;
@@ -20,12 +20,12 @@ namespace mvctrial2.Controllers
 
         public Game Game { get {return this._Game; } set {this._Game=value; } }
         public Dictionary<Square, Rectangle> ViewMap { get { return this._ViewMap; } set { this._ViewMap = value; } }
-        public BoardController BoardCon { get { return this._BoardCon; } set { this._BoardCon = value; } }
+        //public BoardController BoardCon { get { return this._BoardCon; } set { this._BoardCon = value; } }
         //public ControllerService ContServ { get { return this._ContServ; } set { this._ContServ = value; } }
 
         private GameController()
         {
-            this.BoardCon = ControllerService.BoardCon;
+            //this.BoardCon = ControllerService.BoardCon;
             this.Game = new Game();
             this.ViewMap = new Dictionary<Square, Rectangle>();
 

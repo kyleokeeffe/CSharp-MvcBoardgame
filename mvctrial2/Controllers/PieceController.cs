@@ -7,7 +7,7 @@ using static mvctrial2.Services.ControllerService;
 
 namespace mvctrial2.Controllers
 {
-    public sealed class PieceController
+    public sealed class PieceController:ControllerService
     {
         private static PieceController _Instance;
        // private GameController _GameCon;
