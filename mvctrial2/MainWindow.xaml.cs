@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data.SqlClient;
+using static mvctrial2.Services.ControllerService;
 
 namespace mvctrial2
 {
@@ -26,17 +27,25 @@ namespace mvctrial2
     public partial class MainWindow : Window
     {
         
-        GameController gameCon;
-    
+        //private GameController GameCon;
+       // private BoardController BoardCon;
+       // private PieceController PieceCon;
+        //private Grid grid;
+        
+        //public GameController GameCon { get { return this._GameCon; } set { this._GameCon = value; } }
+       // public BoardController BoardCon { get { return this._BoardCon; } set { this._BoardCon = value; } }
+
         public MainWindow()
         {
             InitializeComponent();
-   
-            gameCon = new GameController();
 
-  
+            // grid = boardGrid;
+            //  GameCon = GameController.GetInstance();
+            // BoardCon = BoardController.GetInstance();
+            //  PieceCon = PieceController.GetInstance();
 
-            BuildBoard();
+            GameCon.DoNothing();
+            BoardCon.BuildBoard();
 
 
             //make following into method for AddTextToSquare / RemoveTextFromSquare
@@ -59,7 +68,7 @@ namespace mvctrial2
         
 
         }
-        public bool CheckForLabel(Rectangle rect)
+        /*public bool CheckForLabel(Rectangle rect)
         {
             bool labelPresent = false;
             var result = 
@@ -77,7 +86,7 @@ namespace mvctrial2
                 labelPresent = true;
 
             return labelPresent;
-        }
+        }*/
 
         public void AlertRectInfo()
         {
@@ -93,7 +102,7 @@ namespace mvctrial2
             MessageBox.Show(report);
         }
 
-        public void PrintLabelOnRect(Rectangle rect)
+        /*public void PrintLabelOnRect(Rectangle rect)
         {
             int c = Grid.GetColumn(rect);
             int r = Grid.GetRow(rect);
@@ -114,18 +123,34 @@ namespace mvctrial2
 
             Grid.SetColumn(text, c);
             Grid.SetRow(text, r);
-        }
-       protected void OnClicked(object sender, MouseButtonEventArgs e)
+        }*/
+       internal void OnClicked(object sender, MouseButtonEventArgs e)
         {
 
           
               
             Rectangle senderAsRect = (Rectangle)sender;
             //senderAsRect.Fill = new SolidColorBrush(Colors.Pink);
-            bool labelPresent = CheckForLabel(senderAsRect);
-            if (labelPresent == false)
-                PrintLabelOnRect(senderAsRect);
-            
+
+            Square senderAsSquare = BoardCon.GetSquare(senderAsRect);
+            if (senderAsSquare.Piece != null)
+            {
+                List<Square> legalMoves = PieceCon.GetLegalMoves(senderAsSquare.Piece);
+                foreach (var thing in legalMoves)
+                {
+                    BoardCon.AddTextBlock(thing);
+                }
+
+            }
+            else
+                senderAsRect.Fill = new SolidColorBrush(Colors.Blue);
+
+            TextBlock textBlock = BoardCon.CheckForTextBlock(senderAsRect);
+            if (textBlock == null)
+                BoardCon.AddTextBlock(senderAsRect);
+            else
+                BoardCon.RemoveTextBlock(senderAsRect);
+
             AlertRectInfo();
             
           
@@ -139,7 +164,7 @@ namespace mvctrial2
 
             //turn this into a method: for returnign associated key, and for checking if piece is on rect 
             //Square associatedSquare= gameCon.ViewMap.FirstOrDefault(thing => thing.Value == senderAsRect).Key;
-            Square associatedSquare = GetRectSquare(senderAsRect);
+            Square associatedSquare = BoardCon.GetSquare(senderAsRect);
             Piece occupyingPiece;
 
             /*if (CheckSquareForPiece(associatedSquare) != null)
@@ -159,7 +184,7 @@ namespace mvctrial2
         }
         
 
-        public Piece CheckSquareForPiece(Square square)
+        /*public Piece CheckSquareForPiece(Square square)
         {
             Piece piece;
 
@@ -170,15 +195,15 @@ namespace mvctrial2
             else
                 piece = null;
             return piece;
-        }
-        public Square GetRectSquare(Rectangle rect)
+        }*/
+        /*public Square GetRectSquare(Rectangle rect)
         {
             Square associatedSquare = gameCon.ViewMap.FirstOrDefault(thing => thing.Value == rect).Key;
             return associatedSquare;
-        }
+        }*/
 
 
-        public Rectangle GetSquareRect(int x, int y)
+      /* public Rectangle GetSquareRect(int x, int y)
         {
             var query = gameCon.ViewMap.Keys.AsQueryable<Square>().Where<Square>(thing => thing.X == x && thing.Y == y);
             bool keyFound = false;
@@ -199,8 +224,8 @@ namespace mvctrial2
             return foundRect;
            
 
-        }
-     
+        }*/
+     /*
         public void BuildBoard()
         {
             for (int i = 0; i < 10; i++)
@@ -241,7 +266,7 @@ namespace mvctrial2
 
 
             }
-        }
+        }*/
         
 
     }
