@@ -7,19 +7,26 @@ using System.Windows.Shapes;
 
 namespace mvctrial2.Controllers
 {
-    public class GameController
+    public sealed class GameController
     {
+        private static GameController _Instance;
         private Game _Game;
         private Dictionary<Square, Rectangle>_ViewMap;
         public Game Game { get {return this._Game; } set {this._Game=value; } }
         public Dictionary<Square, Rectangle> ViewMap { get { return this._ViewMap; } set { this._ViewMap = value; } }
 
 
-        public GameController()
+        private GameController()
         {
             this.Game = new Game();
             this.ViewMap = new Dictionary<Square, Rectangle>();
             CreatePieces();
+        }
+        public static GameController GetInstance(){
+            if (_Instance ==null){
+                _Instance = new GameController();
+            }
+            return _Instance;
         }
 
         private void CreatePieces()
