@@ -13,51 +13,50 @@ using static mvctrial2.Services.ControllerService;
 
 namespace mvctrial2.Controllers
 {
-    public sealed class BoardController:ControllerService
+    public sealed class BoardController
     {
-       private static BoardController _Instance;
+        
+        private BoardController() { }
 
-        //private static readonly BoardController instance = new BoardController();
+        public static BoardController Instance { get { return Nested.instance; } }
 
+        private class Nested
+        {
+            static Nested() { }
+            internal static readonly BoardController instance = CreateBC();
+        }
+        private static BoardController CreateBC()
+        {
+            BoardController bc = new BoardController();
+            bc.InitializeBC();
+            bc.AttachService();
+            
+            return bc;
+        }
 
-       // private ControllerService _ContServ;
-       // private GameController _GameCon;
-      //  private PieceController _PieceCon;
+        private ControllerService cs;
+ 
         private Grid _BoardGrid;
 
-      //  public GameController GameCon { get { return this._GameCon; } set { this._GameCon = value; } }
-       // public PieceController PieceCon { get { return this._PieceCon; } set { this._PieceCon = value; } }
-        
-      //  public ControllerService ContServ { get { return this._ContServ; } set { this._ContServ = value; } }
-        
-       /* private BoardController() {
-            this.BoardGrid = ((MainWindow)Application.Current.MainWindow).boardGrid;
-        }*/
-        //public static BoardController Instance { get { return instance; } }
         
         public Grid BoardGrid { get { return this._BoardGrid; } set { this._BoardGrid = value; } }
 
-    
 
-        private BoardController()
+
+        public void InitializeBC()
         {
-           // this.GameCon = ContServ.GameCon;
-           // this.PieceCon = ContServ.PieceCon;
-            this.BoardGrid = ((MainWindow)Application.Current.MainWindow).boardGrid;
+            BoardGrid = ((MainWindow)Application.Current.MainWindow).boardGrid;
         }
-
-        public static override BoardController GetInstance()
+        public void AttachService()
         {
-            if (_Instance == null)
-            {
-                _Instance = new BoardController();
-            }
-            return _Instance;
+            cs = ControllerService.Instance;
+            cs.BoardCon = this;
         }
 
         public Square GetSquare(Rectangle rect)
         {
-            Square associatedSquare = GameCon.ViewMap.FirstOrDefault(keyValuePair => keyValuePair.Value == rect).Key;
+            
+            Square associatedSquare = cs.GameCon.ViewMap.FirstOrDefault(keyValuePair => keyValuePair.Value == rect).Key;
             return associatedSquare;
         }
 
@@ -66,34 +65,24 @@ namespace mvctrial2.Controllers
             Rectangle rect = GetRect(x, y);
 
 
-            Square associatedSquare = GameCon.ViewMap.FirstOrDefault(keyValuePair => keyValuePair.Value == rect).Key;
+            Square associatedSquare = cs.GameCon.ViewMap.FirstOrDefault(keyValuePair => keyValuePair.Value == rect).Key;
 
-            /*Square thisSquare;
-                try
-                {
-                    thisSquare = this.Game.Board.Squares.Find(item => { return item.X == x && item.Y == y; });
-                }
-                catch (Exception e)
-                {
-                    //throw custom exception of square not found
-                    Console.WriteLine("Sorry not found");
-                    thisSquare = null;
-                }*/
+    
             return associatedSquare;
            
         }
 
         public Rectangle GetRect(int x, int y)
         {
-            var query = GameCon.ViewMap.Keys.AsQueryable<Square>().Where<Square>(thing => thing.X == x && thing.Y == y);
+            var query = cs.GameCon.ViewMap.Keys.AsQueryable<Square>().Where<Square>(thing => thing.X == x && thing.Y == y);
             bool keyFound = false;
             Rectangle foundRect = new Rectangle();
             foreach (var key in query)
             {
-                keyFound = GameCon.ViewMap.TryGetValue(key, out Rectangle thing);
+                keyFound = cs.GameCon.ViewMap.TryGetValue(key, out Rectangle thing);
                 if (keyFound == true)
                 {
-                    foundRect = GameCon.ViewMap[key];
+                    foundRect = cs.GameCon.ViewMap[key];
                 }
                 else
                 {
@@ -108,15 +97,15 @@ namespace mvctrial2.Controllers
 
         public Rectangle GetRect(Square square)
         {
-            var query = GameCon.ViewMap.Keys.AsQueryable<Square>().Where<Square>(thing => thing.X == square.X && thing.Y == square.Y);
+            var query = cs.GameCon.ViewMap.Keys.AsQueryable<Square>().Where<Square>(thing => thing.X == square.X && thing.Y == square.Y);
             bool keyFound = false;
             Rectangle foundRect = new Rectangle();
             foreach (var key in query)
             {
-                keyFound = GameCon.ViewMap.TryGetValue(key, out Rectangle thing);
+                keyFound = cs.GameCon.ViewMap.TryGetValue(key, out Rectangle thing);
                 if (keyFound == true)
                 {
-                    foundRect = GameCon.ViewMap[key];
+                    foundRect = cs.GameCon.ViewMap[key];
                 }
                 else
                 {
@@ -162,8 +151,8 @@ namespace mvctrial2.Controllers
 
                     BoardGrid.Children.Add(thisRect);
 
-
-                    GameCon.ViewMap.Add(GetSquare(i, j), thisRect);
+                    //need to separate viewmap creation from board creation 
+                    cs.GameCon.ViewMap.Add(GetSquare(i, j), thisRect);
 
 
                 }

@@ -6,14 +6,46 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using mvctrial2.Services;
 using static mvctrial2.Services.ControllerService;
+using System.Windows;
 
 namespace mvctrial2.Controllers
 {
-    public sealed class GameController:ControllerService
+    public sealed class GameController
     {
-        private static GameController _Instance;
-       //private BoardController _BoardCon;
-        
+       
+        private GameController() {
+         
+          
+            
+            
+        }
+        public static GameController Instance { get { return Nested.instance; }  }
+
+        private class Nested
+        {
+            static Nested() { }
+            internal static readonly GameController instance = CreateGC();
+        }
+        public static GameController CreateGC()
+        {
+            GameController gc = new GameController();
+            gc.SayHello();
+            gc.AttachService();
+            gc.InitiateGame();
+            return gc;
+        }
+        private void SayHello()
+        {
+            MessageBox.Show("hello");
+        }
+
+        private ControllerService cs;
+        //private static GameController _Instance;
+        //private ControllerService cs = ControllerService.Instance;
+        //private BoardController _BoardCon;
+        //private GameController GameCon = GameController.GetInstance();
+        //private BoardController BoardCon = BoardController.GetInstance();
+       // private PieceController PieceCon = PieceController.GetInstance();
         private Game _Game;
         private Dictionary<Square, Rectangle>_ViewMap;
         //private ControllerService _ContServ;
@@ -23,23 +55,36 @@ namespace mvctrial2.Controllers
         //public BoardController BoardCon { get { return this._BoardCon; } set { this._BoardCon = value; } }
         //public ControllerService ContServ { get { return this._ContServ; } set { this._ContServ = value; } }
 
-        private GameController()
+        /* private GameController()
+         {
+             //this.BoardCon = ControllerService.BoardCon;
+             this.Game = new Game();
+             this.ViewMap = new Dictionary<Square, Rectangle>();
+
+             CreatePieces();
+         }*/
+        /* public static GameController GetInstance(){
+             if (_Instance ==null){
+
+                 //ControllerService _Instance = ControllerService.GetServiceInstance();
+                 //_Instance = (GameController)_Instance;
+                 _Instance = new GameController();
+             }
+             return _Instance;
+         }*/
+
+        public void AttachService()
         {
-            //this.BoardCon = ControllerService.BoardCon;
+            cs = ControllerService.Instance;
+            cs.GameCon = this;
+        }
+        public void InitiateGame()
+        {
+
             this.Game = new Game();
             this.ViewMap = new Dictionary<Square, Rectangle>();
 
             CreatePieces();
-        }
-        public static override GameController GetInstance(){
-            if (_Instance ==null){
-                _Instance = new GameController();
-            }
-            return _Instance;
-        }
-        public void DoNothing()
-        {
-
         }
         public void CreatePieces()
         {
@@ -58,7 +103,7 @@ namespace mvctrial2.Controllers
                         else
                             thisCol = Brushes.White;
                         Piece thisPiece = new Piece(thisCol, x, y);
-                        thisPiece.Location = BoardCon.GetSquare(x, y);
+                        thisPiece.Location = cs.BoardCon.GetSquare(x, y);
                         this.Game.Pieces.Add(thisPiece);
                         counter++;
                     }
@@ -69,7 +114,7 @@ namespace mvctrial2.Controllers
         {
             foreach(Piece piece in this.Game.Pieces)
             {
-                BoardCon.AddTextBlock(piece.Location);
+                cs.BoardCon.AddTextBlock(piece.Location);
             }
             //using map and
             //add node to grid

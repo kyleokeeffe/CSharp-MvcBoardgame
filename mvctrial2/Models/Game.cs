@@ -19,49 +19,7 @@ namespace mvctrial2.Models
             this.Board = new Board(); 
         }
 
-        //public void CreatePieces()
-        //{
-  
-        //    Brush thisCol;
-      
-        //    int[] startingRows = { 0, 1, 8, 9 };
-        //    for (int i = 0; i < 23; i++)
-        //    {
-        //        if(i <= 11)
-        //            thisCol = Brushes.Black;
-        //        else
-        //            thisCol = Brushes.White;
-
-        //        foreach (int x in startingRows)
-        //        {
-
-                
-                
-        //            for(int y = 0;y<10;y++)
-        //            {
-
-
-
-        //                Piece thisPiece = new Piece(thisCol, x, y);
-        //                this.Pieces.Add(thisPiece);
-
-        //                this.Board.GetSquare(thisPiece.X, thisPiece.Y).Piece = thisPiece;
-
-
-        //            }
-
-                
-        //        }
-                
-
-              
-
-
-           
-
-
-        //    }
-        //}
+        
 
 
         public string PrintPieces()
