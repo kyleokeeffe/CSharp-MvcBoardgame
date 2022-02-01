@@ -9,32 +9,35 @@ namespace mvctrial2.Controllers
 {
     public sealed class PieceController
     {
-        private static PieceController _Instance;
-       // private GameController _GameCon;
-       // private BoardController _BoardCon;
-       // private ControllerService _ContServ;
-
-
-       // public GameController GameCon { get { return this._GameCon; } set { this._GameCon = value; } }
-       // public BoardController BoardCon { get { return this._BoardCon; } set { this._BoardCon = value; } }
-      //  public ControllerService ContServ { get { return this._ContServ; } set { this._ContServ = value; } }
-
+        
         private PieceController()
         {
-        //    this.GameCon = this.ContServ.GameCon;
-         //   this.BoardCon = this.ContServ.BoardCon;
-        }
+     
+        } 
+        
+        public static PieceController Instance { get { return Nested.instance; } }
 
-        public static PieceController GetInstance()
+        private class Nested
         {
-            if(_Instance == null)
-            {
-                _Instance = new PieceController();
-            }
-            return _Instance;
+            static Nested() { }
+            internal static readonly PieceController instance = new PieceController();
         }
 
+        public static PieceController CreatePC()
+        {
+            PieceController pc = new PieceController();
+            pc.AttachService();
+            return pc;
+        }
+        private ControllerService cs;
+        
 
+        public void AttachService()
+        {
+            cs = ControllerService.Instance;
+            cs.PieceCon = this;
+        }
+      
 
         public bool Move(Piece piece,int newX, int newY)
         {
@@ -42,7 +45,7 @@ namespace mvctrial2.Controllers
             try
             {
 
-                piece.Location = BoardCon.GetSquare(newX, newY);
+                piece.Location = cs.BoardCon.GetSquare(newX, newY);
                 success = true;
             }
             catch (Exception e)
@@ -65,10 +68,10 @@ namespace mvctrial2.Controllers
         {
             List<Square> legalMoves = new List<Square>();
 
-            Square checkSquare = BoardCon.GetSquare(piece.Location.X + 1, piece.Location.Y + 1);
+            Square checkSquare = cs.BoardCon.GetSquare(piece.Location.X + 1, piece.Location.Y + 1);
             if (checkSquare.Piece != null)
             {
-                checkSquare = BoardCon.GetSquare(piece.Location.X + 2, piece.Location.Y + 2);
+                checkSquare = cs.BoardCon.GetSquare(piece.Location.X + 2, piece.Location.Y + 2);
                 if (checkSquare.Piece != null)
                     checkSquare = null;
             }

@@ -11,7 +11,8 @@ namespace mvctrial2.Models
 
         public Board()
         {
-            PopulateBoard();
+            //PopulateBoard();
+            this.Squares = new List<Square>();
         }
 
 
@@ -23,7 +24,7 @@ namespace mvctrial2.Models
                 for(int col = 0; col < 10; col++)
                 {
                     Square thisSquare = new Square(row,col);
-                    //thisSquare.
+   
 
 
                     this.Squares.Add(thisSquare);

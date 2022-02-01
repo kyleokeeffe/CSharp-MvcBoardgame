@@ -12,7 +12,10 @@ namespace mvctrial2.Models
         private int _X;
         private int _Y;
         private Square _Location;
-        
+     
+        private GameController GameCon = GameController.Instance;
+        private BoardController BoardCon = BoardController.Instance;
+        private PieceController PieceCon = PieceController.Instance;
 
         public int X { get {return this._X; } set {this._X = value; } }
         public int Y { get {return this._Y; } set {this._Y = value; } }
@@ -24,7 +27,7 @@ namespace mvctrial2.Models
             this._Color = color;
             this.X = x;
             this.Y = y;
-            this.Location = ControllerService.BoardCon.GetSquare(x, y);
+            this.Location = BoardCon.GetSquare(x, y);
 
         }
 
