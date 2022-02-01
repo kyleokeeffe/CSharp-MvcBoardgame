@@ -11,7 +11,8 @@ namespace mvctrial2.Models
 
         public Board()
         {
-            PopulateBoard();
+            //PopulateBoard();
+            this.Squares = new List<Square>();
         }
 
 

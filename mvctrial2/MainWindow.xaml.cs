@@ -50,11 +50,7 @@ namespace mvctrial2
             PieceCon = cs.PieceCon;
             
 
-
-               // GameCon.DoNothing();
-            
-           
-            BoardCon.BuildBoard();
+            GameCon.InitiateGame();
            
 
         

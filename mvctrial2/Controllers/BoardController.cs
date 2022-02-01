@@ -126,7 +126,7 @@ namespace mvctrial2.Controllers
                 for (int j = 0; j < 10; j++)
                 {
                     Rectangle thisRect = new Rectangle();
-
+                    Square thisSquare = new Square(i, j);
                     thisRect.SetValue(Grid.RowProperty, i);
                     thisRect.SetValue(Grid.ColumnProperty, j);
                     if (j % 2 == 0)
@@ -150,9 +150,9 @@ namespace mvctrial2.Controllers
 
 
                     BoardGrid.Children.Add(thisRect);
+                    this.cs.GameCon.Game.Board.Squares.Add(thisSquare);
 
-                    //need to separate viewmap creation from board creation 
-                    cs.GameCon.ViewMap.Add(GetSquare(i, j), thisRect);
+                    cs.GameCon.ViewMap.Add(thisSquare, thisRect);
 
 
                 }
