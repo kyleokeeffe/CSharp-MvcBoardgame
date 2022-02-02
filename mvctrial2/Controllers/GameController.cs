@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace mvctrial2.Controllers
 {
-    public sealed class GameController
+    public sealed class GameController:IControllerService
     {
        
         private GameController() {
@@ -29,15 +29,12 @@ namespace mvctrial2.Controllers
         public static GameController CreateGC()
         {
             GameController gc = new GameController();
-            gc.SayHello();
+       
             gc.AttachService();
-           // gc.InitiateGame();
+          
             return gc;
         }
-        private void SayHello()
-        {
-            MessageBox.Show("hello");
-        }
+   
 
         private ControllerService cs;
         
@@ -83,16 +80,19 @@ namespace mvctrial2.Controllers
                             thisCol = Brushes.White;
                         Piece thisPiece = new Piece(thisCol, x, y);
                         thisPiece.Location = cs.BoardCon.GetSquare(x, y);
+                    //thisPiece.Location.PiecePresent = true;
+                    //thisPiece.Location.Piece = thisPiece;
                         this.Game.Pieces.Add(thisPiece);
                         counter++;
                     }
                 }
             }
         
-        public void PrintPieces()
+        public void PlacePieces()
         {
             foreach(Piece piece in this.Game.Pieces)
             {
+                
                 cs.BoardCon.AddTextBlock(piece.Location);
             }
             //using map

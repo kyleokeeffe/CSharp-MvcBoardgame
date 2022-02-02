@@ -51,6 +51,7 @@ namespace mvctrial2
             
 
             GameCon.InitiateGame();
+            GameCon.PlacePieces();
            
 
         
@@ -82,25 +83,29 @@ namespace mvctrial2
             //senderAsRect.Fill = new SolidColorBrush(Colors.Pink);
 
             Square senderAsSquare = BoardCon.GetSquare(senderAsRect);
+            //MessageBox.Show(senderAsSquare.ToString());
             if (senderAsSquare.Piece != null)
             {
                 List<Square> legalMoves = PieceCon.GetLegalMoves(senderAsSquare.Piece);
-                foreach (var thing in legalMoves)
+                foreach (Square legalMove in legalMoves)
                 {
-                    BoardCon.AddTextBlock(thing);
+                    BoardCon.AddTextBlock(legalMove);
+                    MessageBox.Show($"{senderAsSquare.X}, {senderAsSquare.Y} -  {legalMove.X}, {legalMove.Y}");
                 }
+                //MessageBox.Show("piece");
 
             }
             else
-                senderAsRect.Fill = new SolidColorBrush(Colors.Blue);
+                MessageBox.Show("no piece");
+               // senderAsRect.Fill = new SolidColorBrush(Colors.Blue);
 
-            TextBlock textBlock = BoardCon.CheckForTextBlock(senderAsRect);
+          /* TextBlock textBlock = BoardCon.CheckForTextBlock(senderAsRect);
             if (textBlock == null)
                 BoardCon.AddTextBlock(senderAsRect);
             else
                 BoardCon.RemoveTextBlock(senderAsRect);
-
-            AlertRectInfo();
+          */
+           // AlertRectInfo();
             
           
            

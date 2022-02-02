@@ -13,7 +13,7 @@ using static mvctrial2.Services.ControllerService;
 
 namespace mvctrial2.Controllers
 {
-    public sealed class BoardController
+    public sealed class BoardController:IControllerService
     {
         
         private BoardController() { }

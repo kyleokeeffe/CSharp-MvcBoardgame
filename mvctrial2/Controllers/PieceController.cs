@@ -1,26 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 using mvctrial2.Models;
 using mvctrial2.Services;
 using static mvctrial2.Services.ControllerService;
 
 namespace mvctrial2.Controllers
 {
-    public sealed class PieceController
+    public sealed class PieceController:IControllerService
     {
         
         private PieceController()
         {
      
-        } 
-        
+        }
+
+        private ControllerService cs;
         public static PieceController Instance { get { return Nested.instance; } }
 
         private class Nested
         {
             static Nested() { }
-            internal static readonly PieceController instance = new PieceController();
+            internal static readonly PieceController instance = CreatePC();
         }
 
         public static PieceController CreatePC()
@@ -29,7 +31,7 @@ namespace mvctrial2.Controllers
             pc.AttachService();
             return pc;
         }
-        private ControllerService cs;
+       
         
 
         public void AttachService()
@@ -68,14 +70,18 @@ namespace mvctrial2.Controllers
         {
             List<Square> legalMoves = new List<Square>();
 
+
+           
             Square checkSquare = cs.BoardCon.GetSquare(piece.Location.X + 1, piece.Location.Y + 1);
+            
             if (checkSquare.Piece != null)
             {
-                checkSquare = cs.BoardCon.GetSquare(piece.Location.X + 2, piece.Location.Y + 2);
-                if (checkSquare.Piece != null)
-                    checkSquare = null;
+                /* checkSquare = cs.BoardCon.GetSquare(piece.Location.X + 2, piece.Location.Y + 2);
+                 if (checkSquare.Piece != null)
+                     checkSquare = null;*/
+                legalMoves.Add(checkSquare);
             }
-            legalMoves.Add(checkSquare);
+            
             return legalMoves;
             //from location get two squares, 
             //check location for piece 
