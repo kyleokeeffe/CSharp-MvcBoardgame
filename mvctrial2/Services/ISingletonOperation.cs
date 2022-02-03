@@ -4,7 +4,7 @@ using System.Text;
 
 namespace mvctrial2.Services
 {
-    interface Interface1
+    public interface ISingletonOperation:IOperation
     {
     }
 }
