@@ -15,8 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
 using mvctrial2.Services;
-
 
 namespace mvctrial2
 {
@@ -28,35 +28,52 @@ namespace mvctrial2
     public partial class MainWindow : Window
     {
 
-        private GameController GameCon;
-         private BoardController BoardCon;
-         private PieceController PieceCon;
+        private GameController GameConService;
+         private BoardController BoardConService;
+         private PieceController PieceConService;
 
-        private ControllerService cs;
+  
         
       
         public MainWindow()
         {
             
             InitializeComponent();
+           
 
-            cs = ControllerService.Instance;
-         
-            cs.InitializeService();
-
-
-            GameCon = cs.GameCon;
-            BoardCon = cs.BoardCon;
-            PieceCon = cs.PieceCon;
             
+         
+      
 
-            GameCon.InitiateGame();
+
+            GetGameService().InitiateGame();
+            GetGameService().PlacePieces();
            
 
         
 
         }
-       
+        public BoardController GetBoardService()
+        {
+            ServiceProvider serviceProvider = ((App)Application.Current).GetService();
+            var serviceOperation = serviceProvider.GetService<ISingletonOperation>();
+            BoardController BoardCon = serviceOperation.BoardCon;
+            return BoardCon;
+        }
+        public GameController GetGameService()
+        {
+            ServiceProvider serviceProvider = ((App)Application.Current).GetService();
+            var serviceOperation = serviceProvider.GetService<ISingletonOperation>();
+            GameController GameCon = serviceOperation.GameCon;
+            return GameCon;
+        }
+        public PieceController GetPieceService()
+        {
+            ServiceProvider serviceProvider = ((App)Application.Current).GetService();
+            var serviceOperation = serviceProvider.GetService<ISingletonOperation>();
+            PieceController PieceCon = serviceOperation.PieceCon;
+            return PieceCon;
+        }
 
         public void AlertRectInfo()
         {
@@ -81,30 +98,34 @@ namespace mvctrial2
             Rectangle senderAsRect = (Rectangle)sender;
             //senderAsRect.Fill = new SolidColorBrush(Colors.Pink);
 
-            Square senderAsSquare = BoardCon.GetSquare(senderAsRect);
+            Square senderAsSquare = GetBoardService().GetSquare(senderAsRect);
+            //MessageBox.Show(senderAsSquare.ToString());
             if (senderAsSquare.Piece != null)
             {
-                List<Square> legalMoves = PieceCon.GetLegalMoves(senderAsSquare.Piece);
-                foreach (var thing in legalMoves)
+                List<Square> legalMoves = GetPieceService().GetLegalMoves(senderAsSquare.Piece);
+                foreach (Square legalMove in legalMoves)
                 {
-                    BoardCon.AddTextBlock(thing);
+                    GetBoardService().AddTextBlock(legalMove);
+                    MessageBox.Show($"{senderAsSquare.X}, {senderAsSquare.Y} -  {legalMove.X}, {legalMove.Y}");
                 }
+                //MessageBox.Show("piece");
 
             }
             else
-                senderAsRect.Fill = new SolidColorBrush(Colors.Blue);
+                MessageBox.Show("no piece");
+               // senderAsRect.Fill = new SolidColorBrush(Colors.Blue);
 
-            TextBlock textBlock = BoardCon.CheckForTextBlock(senderAsRect);
+          /* TextBlock textBlock = BoardCon.CheckForTextBlock(senderAsRect);
             if (textBlock == null)
                 BoardCon.AddTextBlock(senderAsRect);
             else
                 BoardCon.RemoveTextBlock(senderAsRect);
-
-            AlertRectInfo();
+          */
+           // AlertRectInfo();
             
           
            
-            Square associatedSquare = BoardCon.GetSquare(senderAsRect);
+            Square associatedSquare = GetBoardService().GetSquare(senderAsRect);
             Piece occupyingPiece;
 
           

@@ -5,8 +5,9 @@ using System.Text;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using mvctrial2.Services;
-using static mvctrial2.Services.ControllerService;
+
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace mvctrial2.Controllers
 {
@@ -19,27 +20,25 @@ namespace mvctrial2.Controllers
             
             
         }
-        public static GameController Instance { get { return Nested.instance; }  }
+         public static GameController Instance { get { return Nested.instance; }  }
 
         private class Nested
         {
             static Nested() { }
             internal static readonly GameController instance = CreateGC();
         }
+        public void Serve() { }
         public static GameController CreateGC()
         {
             GameController gc = new GameController();
-            gc.SayHello();
-            gc.AttachService();
-           // gc.InitiateGame();
+
+            //register service
+            InitializeService();
+           // gc.AttachService();
+          
             return gc;
         }
-        private void SayHello()
-        {
-            MessageBox.Show("hello");
-        }
 
-        private ControllerService cs;
         
         private Game _Game;
         private Dictionary<Square, Rectangle>_ViewMap;
@@ -48,18 +47,35 @@ namespace mvctrial2.Controllers
         public Game Game { get {return this._Game; } set {this._Game=value; } }
         public Dictionary<Square, Rectangle> ViewMap { get { return this._ViewMap; } set { this._ViewMap = value; } }
 
+        public static void InitializeService()
+        {
+            ServiceProvider serviceProvider = ((App)Application.Current).GetService();
+            var serviceOperation = serviceProvider.GetService<ISingletonOperation>();
+            serviceOperation.BuildGameCon();
+        }
 
-        public void AttachService()
+        public BoardController GetBoardService()
+        {
+            ServiceProvider serviceProvider = ((App)Application.Current).GetService();
+            var serviceOperation = serviceProvider.GetService<ISingletonOperation>();
+            BoardController BoardCon = serviceOperation.BoardCon;
+            return BoardCon;
+        }
+        public Dictionary<Square,Rectangle> GetViewMap()
+        {
+            return this.ViewMap;
+        }
+        /*public void AttachService()
         {
             cs = ControllerService.Instance;
             cs.GameCon = this;
-        }
+        }*/
         public void InitiateGame()
         {
 
             this.ViewMap = new Dictionary<Square, Rectangle>();
             this.Game = new Game();
-            cs.BoardCon.BuildBoard();
+            GetBoardService().BuildBoard();
 
             CreatePieces();
         }
@@ -82,18 +98,21 @@ namespace mvctrial2.Controllers
                         else
                             thisCol = Brushes.White;
                         Piece thisPiece = new Piece(thisCol, x, y);
-                        thisPiece.Location = cs.BoardCon.GetSquare(x, y);
+                        thisPiece.Location = GetBoardService().GetSquare(x, y);
+                    //thisPiece.Location.PiecePresent = true;
+                    //thisPiece.Location.Piece = thisPiece;
                         this.Game.Pieces.Add(thisPiece);
                         counter++;
                     }
                 }
             }
         
-        public void PrintPieces()
+        public void PlacePieces()
         {
             foreach(Piece piece in this.Game.Pieces)
             {
-                cs.BoardCon.AddTextBlock(piece.Location);
+
+                GetBoardService().AddTextBlock(piece.Location);
             }
             //using map
             //add node to grid

@@ -20,7 +20,7 @@ namespace mvctrial2.Models
         public int X { get {return this._X; } set {this._X = value; } }
         public int Y { get {return this._Y; } set {this._Y = value; } }
         public System.Windows.Media.Brush Color { get { return this._Color; } set { this._Color = value; } }
-        public Square Location { get {return this._Location; } set { this._Location = value; } }
+        public Square Location { get {return this._Location; } set { this._Location = value; this.Location.Piece = this; } }
         
         public Piece(System.Windows.Media.Brush color, int x, int y)
         {
@@ -30,6 +30,11 @@ namespace mvctrial2.Models
             this.Location = BoardCon.GetSquare(x, y);
 
         }
+
+       /* public override string ToString()
+        {
+            return $"{this.GetType()}: ({this.Location.X}, {this.Location.Y})";
+        }*/
 
     }
 }

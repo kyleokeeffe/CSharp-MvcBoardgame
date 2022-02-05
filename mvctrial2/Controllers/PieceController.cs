@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using mvctrial2.Models;
 using mvctrial2.Services;
-using static mvctrial2.Services.ControllerService;
+
 
 namespace mvctrial2.Controllers
 {
@@ -13,31 +15,43 @@ namespace mvctrial2.Controllers
         private PieceController()
         {
      
-        } 
-        
-        public static PieceController Instance { get { return Nested.instance; } }
+        }
+
+         public static PieceController Instance { get { return Nested.instance; } }
 
         private class Nested
         {
             static Nested() { }
-            internal static readonly PieceController instance = new PieceController();
+            internal static readonly PieceController instance = CreatePC();
         }
-
+        public void Serve() { }
         public static PieceController CreatePC()
         {
             PieceController pc = new PieceController();
-            pc.AttachService();
+            InitializeService();
+            //pc.AttachService();
             return pc;
         }
-        private ControllerService cs;
-        
 
-        public void AttachService()
+        public static void InitializeService()
         {
-            cs = ControllerService.Instance;
-            cs.PieceCon = this;
+            ServiceProvider serviceProvider = ((App)Application.Current).GetService();
+            var serviceOperation = serviceProvider.GetService<ISingletonOperation>();
+            serviceOperation.BuildGameCon();
         }
-      
+
+        /*public void AttachService()
+         {
+             cs = ControllerService.Instance;
+             cs.PieceCon = this;
+         }*/
+        public BoardController GetBoardService()
+        {
+            ServiceProvider serviceProvider = ((App)Application.Current).GetService();
+            var serviceOperation = serviceProvider.GetService<ISingletonOperation>();
+            BoardController BoardCon = serviceOperation.BoardCon;
+            return BoardCon;
+        }
 
         public bool Move(Piece piece,int newX, int newY)
         {
@@ -45,7 +59,7 @@ namespace mvctrial2.Controllers
             try
             {
 
-                piece.Location = cs.BoardCon.GetSquare(newX, newY);
+                piece.Location = GetBoardService().GetSquare(newX, newY);
                 success = true;
             }
             catch (Exception e)
@@ -68,14 +82,18 @@ namespace mvctrial2.Controllers
         {
             List<Square> legalMoves = new List<Square>();
 
-            Square checkSquare = cs.BoardCon.GetSquare(piece.Location.X + 1, piece.Location.Y + 1);
+
+           
+            Square checkSquare = GetBoardService().GetSquare(piece.Location.X + 1, piece.Location.Y + 1);
+            
             if (checkSquare.Piece != null)
             {
-                checkSquare = cs.BoardCon.GetSquare(piece.Location.X + 2, piece.Location.Y + 2);
-                if (checkSquare.Piece != null)
-                    checkSquare = null;
+                /* checkSquare = cs.BoardCon.GetSquare(piece.Location.X + 2, piece.Location.Y + 2);
+                 if (checkSquare.Piece != null)
+                     checkSquare = null;*/
+                legalMoves.Add(checkSquare);
             }
-            legalMoves.Add(checkSquare);
+            
             return legalMoves;
             //from location get two squares, 
             //check location for piece 

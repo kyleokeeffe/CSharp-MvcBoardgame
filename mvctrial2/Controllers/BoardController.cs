@@ -8,8 +8,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using mvctrial2.Services;
-using static mvctrial2.Services.ControllerService;
 
+using Microsoft.Extensions.DependencyInjection;
 
 namespace mvctrial2.Controllers
 {
@@ -18,7 +18,7 @@ namespace mvctrial2.Controllers
         
         private BoardController() { }
 
-        public static BoardController Instance { get { return Nested.instance; } }
+         public static BoardController Instance { get { return Nested.instance; } }
 
         private class Nested
         {
@@ -29,34 +29,53 @@ namespace mvctrial2.Controllers
         {
             BoardController bc = new BoardController();
             bc.InitializeBC();
-            bc.AttachService();
+            InitializeService();
+
+            //register service
+            //bc.AttachService();
             
             return bc;
         }
+        public static void InitializeService()
+        {
+            ServiceProvider serviceProvider = ((App)Application.Current).GetService();
+            var serviceOperation = serviceProvider.GetService<ISingletonOperation>();
+            serviceOperation.BuildGameCon();
+        }
+        // private ControllerService cs;
 
-        private ControllerService cs;
- 
         private Grid _BoardGrid;
-
+      
         
         public Grid BoardGrid { get { return this._BoardGrid; } set { this._BoardGrid = value; } }
 
-
+        //private ServiceProvider serviceProvider;
+        public void Serve() { }
 
         public void InitializeBC()
         {
             BoardGrid = ((MainWindow)Application.Current.MainWindow).boardGrid;
         }
-        public void AttachService()
+        /*public void AttachService()
         {
             cs = ControllerService.Instance;
             cs.BoardCon = this;
-        }
+        }*/
 
+        public GameController GetGameService()
+        {
+            ServiceProvider serviceProvider = ((App)Application.Current).GetService();
+            var serviceOperation = serviceProvider.GetService<ISingletonOperation>();
+            GameController GameCon = serviceOperation.GameCon;
+            return GameCon;
+        }
         public Square GetSquare(Rectangle rect)
         {
-            
-            Square associatedSquare = cs.GameCon.ViewMap.FirstOrDefault(keyValuePair => keyValuePair.Value == rect).Key;
+             ServiceProvider serviceProvider = ((App)Application.Current).GetService();
+            var serviceOperation= serviceProvider.GetService<ISingletonOperation>();
+            GameController GameCon = serviceOperation.GameCon;
+            Square associatedSquare = GameCon.ViewMap.FirstOrDefault(keyValuePair => keyValuePair.Value == rect).Key;
+
             return associatedSquare;
         }
 
@@ -65,7 +84,7 @@ namespace mvctrial2.Controllers
             Rectangle rect = GetRect(x, y);
 
 
-            Square associatedSquare = cs.GameCon.ViewMap.FirstOrDefault(keyValuePair => keyValuePair.Value == rect).Key;
+            Square associatedSquare = GetGameService().ViewMap.FirstOrDefault(keyValuePair => keyValuePair.Value == rect).Key;
 
     
             return associatedSquare;
@@ -74,15 +93,15 @@ namespace mvctrial2.Controllers
 
         public Rectangle GetRect(int x, int y)
         {
-            var query = cs.GameCon.ViewMap.Keys.AsQueryable<Square>().Where<Square>(thing => thing.X == x && thing.Y == y);
+            var query = GetGameService().ViewMap.Keys.AsQueryable<Square>().Where<Square>(thing => thing.X == x && thing.Y == y);
             bool keyFound = false;
             Rectangle foundRect = new Rectangle();
             foreach (var key in query)
             {
-                keyFound = cs.GameCon.ViewMap.TryGetValue(key, out Rectangle thing);
+                keyFound = GetGameService().ViewMap.TryGetValue(key, out Rectangle thing);
                 if (keyFound == true)
                 {
-                    foundRect = cs.GameCon.ViewMap[key];
+                    foundRect = GetGameService().ViewMap[key];
                 }
                 else
                 {
@@ -97,15 +116,15 @@ namespace mvctrial2.Controllers
 
         public Rectangle GetRect(Square square)
         {
-            var query = cs.GameCon.ViewMap.Keys.AsQueryable<Square>().Where<Square>(thing => thing.X == square.X && thing.Y == square.Y);
+            var query = GetGameService().ViewMap.Keys.AsQueryable<Square>().Where<Square>(thing => thing.X == square.X && thing.Y == square.Y);
             bool keyFound = false;
             Rectangle foundRect = new Rectangle();
             foreach (var key in query)
             {
-                keyFound = cs.GameCon.ViewMap.TryGetValue(key, out Rectangle thing);
+                keyFound = GetGameService().ViewMap.TryGetValue(key, out Rectangle thing);
                 if (keyFound == true)
                 {
-                    foundRect = cs.GameCon.ViewMap[key];
+                    foundRect = GetGameService().ViewMap[key];
                 }
                 else
                 {
@@ -150,9 +169,9 @@ namespace mvctrial2.Controllers
 
 
                     BoardGrid.Children.Add(thisRect);
-                    this.cs.GameCon.Game.Board.Squares.Add(thisSquare);
+                    GetGameService().Game.Board.Squares.Add(thisSquare);
 
-                    cs.GameCon.ViewMap.Add(thisSquare, thisRect);
+                    GetGameService().ViewMap.Add(thisSquare, thisRect);
 
 
                 }
