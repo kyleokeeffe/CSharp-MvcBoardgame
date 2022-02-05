@@ -12,9 +12,9 @@ namespace mvctrial2.Services
         {
             MessageBox.Show("default thing");
         }*/
-        public GameController GameCon { get ; set ; }
-        public BoardController BoardCon { get ;set; }
-        public PieceController PieceCon { get ; set; }
+        public GameController GameCon { get { return GameController.Instance; } set { value=GameController.Instance; } }
+        public BoardController BoardCon { get { return BoardController.Instance; } set { value = BoardController.Instance; } }
+        public PieceController PieceCon { get { return PieceController.Instance; } set { value = PieceController.Instance; } }
 
         public void BuildBoardCon()
         {

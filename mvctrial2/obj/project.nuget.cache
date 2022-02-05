@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "TWxr/nXR7sbzlou+w28tLsikzGt5Xr1GSuCZPXM+AmwxMws5jd9fgV3wbrs7Wjl4UqHhPgSRnbW2abRTOi9aNQ==",
+  "dgSpecHash": "MnPG7ZqPTpyIYnGocf410NnnHKJUhd+c3QKtScBqYVBpG/52wzKc3ATyM0EzZHFLcliGJoJr29hdIfvmwZdk+w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\okeef\\Documents\\03Personal\\projects\\csharpmvc\\mvctrial2\\mvctrial2\\mvctrial2\\mvctrial2.csproj",
+  "projectFilePath": "C:\\Users\\okeef\\Documents\\03Personal\\02Projects\\csharpmvc\\mvctrial2\\mvctrial2\\mvctrial2\\mvctrial2.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\okeef\\.nuget\\packages\\microsoft.extensions.configuration\\6.0.0\\microsoft.extensions.configuration.6.0.0.nupkg.sha512",
     "C:\\Users\\okeef\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\6.0.0\\microsoft.extensions.configuration.abstractions.6.0.0.nupkg.sha512",
